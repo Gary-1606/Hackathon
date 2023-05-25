@@ -6,14 +6,12 @@ import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import LoadingDots from '@/components/ui/LoadingDots';
 import { Document } from 'langchain/document';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { Select } from '@chakra-ui/react';
 
 export default function Home() {
+  const [age, setAge] = useState('8-12');
+  const [difficulty, setDifficulty] = useState('easy');
+
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,10 +45,10 @@ export default function Home() {
 
     setError(null);
 
-    if (!query) {
-      alert('Please input a question');
-      return;
-    }
+    let query = `Create a list of 10 random multiple choice questions with 4 options of difficult ${difficulty} and for children of age group ${age} years. Make sure the questions are designed to improve STEM (Science, Technology, Engineering and Mathematics) principles for the kids. Provide correct answer and hint for each questions on AFL rules.
+    Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
+    
+    The JSON response:`;
 
     const question = query.trim();
 
@@ -125,8 +123,42 @@ export default function Home() {
       <Layout>
         <div className="mx-auto flex flex-col gap-4">
           <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-            Chat With Your Docs
+            INTERACTIVE QUIZ BOT
           </h1>
+          <form className="mt-8" onSubmit={handleSubmit}>
+            <div className={styles.flex}>
+              <select
+                placeholder="Difficulty Level"
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+                className={styles.select}
+              >
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="difficult">Difficult</option>
+              </select>
+              <select
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="Age Group"
+                className={styles.select}
+              >
+                <option value="8-12">8-12 years</option>
+                <option value="12-16">12-16 years</option>
+                <option value="16-20">16-20 years</option>
+              </select>
+            </div>
+            <div className={styles.flex}>
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Generate Quiz
+              </button>
+            </div>
+          </form>
 
           <main className={styles.main}>
             <div className={styles.cloud}>
@@ -166,7 +198,6 @@ export default function Home() {
                         : styles.usermessage;
                   }
 
-                  console.log(JSON.stringify(message.message));
                   return (
                     <>
                       <div key={`chatMessage-${index}`} className={className}>

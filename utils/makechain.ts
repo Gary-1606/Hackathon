@@ -10,10 +10,10 @@ Follow Up Input: {question}
 Standalone question:`;
 
 const QA_PROMPT = `
-Create a list of 10 random multiple choice questions with 4 options and hint for each questions on AFL rules.
-Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
-
-The JSON response:
+Create a list of 10 random multiple choice questions with 4 options of difficult medium and for children of age group 8-12 years. Make sure the questions are designed to improve STEM (Science, Technology, Engineering and Mathematics) principles for the kids. Provide correct answer and hint for each questions on AFL rules.
+    Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
+    
+    The JSON response:
 `;
 
 export const makeChain = (vectorstore: PineconeStore) => {
