@@ -11,6 +11,7 @@ import { Select } from '@chakra-ui/react';
 export default function Home() {
   const [age, setAge] = useState('8-12');
   const [difficulty, setDifficulty] = useState('easy');
+  const [quizData, setQuizData] = useState();
 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,10 +46,12 @@ export default function Home() {
 
     setError(null);
 
-    let query = `Create a list of 10 random multiple choice questions with 4 options of difficult ${difficulty} and for children of age group ${age} years. Make sure the questions are designed to improve STEM (Science, Technology, Engineering and Mathematics) principles for the kids. Provide correct answer and hint for each questions on AFL rules.
-    Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
-    
-    The JSON response:`;
+    let query = `Create a list of 10 random multiple choice questions with 4 options of difficult ${difficulty} and for children of age group ${age} years on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
+
+    Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
+        Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
+        
+        The JSON response:`;
 
     const question = query.trim();
 
@@ -80,6 +83,9 @@ export default function Home() {
       const data = await response.json();
       console.log('data', data);
 
+      const jsonData = data.text.replace(/\\n' \+/g, '');
+      console.log('jsonData', jsonData);
+
       if (data.error) {
         setError(data.error);
       } else {
@@ -97,7 +103,7 @@ export default function Home() {
         }));
       }
       console.log('messageState', messageState);
-
+      setQuizData(jsonData);
       setLoading(false);
 
       //scroll to bottom
