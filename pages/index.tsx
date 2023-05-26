@@ -157,7 +157,7 @@ export default function Home() {
                 onChange={(e) => setDifficulty(e.target.value)}
                 className={styles.select}
               >
-                <option value="default">Difficulty Level</option>
+                <option value="">Difficulty Level</option>
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="difficult">Difficult</option>
