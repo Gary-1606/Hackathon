@@ -270,9 +270,6 @@ export default function Home() {
             )}
           </main>
         </div>
-        <footer className="m-auto p-4">
-          <a href="https://twitter.com/mayowaoshin">Demo by TEAM HAI-5</a>
-        </footer>
       </Layout>
     </>
   );
