@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="mx-auto flex flex-col space-y-4">
+    <div className="mx-auto flex flex-col space-y-4 min-h-screen">
       <header className="sticky top-0 z-40 w-full bg-[#004b8d]">
         <div className="border-b border-b-slate-200 py-4">
           <nav className="flex flex-row items-center gap-20 text-6xl font-serif px-20">
@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </main>
       </div>
-      <footer className="bg-[#004b8d] text-white py-8 w-full">
+      <footer className="bg-[#004b8d] text-white py-8 w-full !mt-auto">
         <div className="container mx-auto">
           <div className="space-x-4 flex items-center justify-between">
             <Image src={logo} alt="Company Logo" width={60} height={60} />

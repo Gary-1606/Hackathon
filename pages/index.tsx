@@ -3,14 +3,12 @@ import Layout from '@/components/layout';
 import styles from '@/styles/Home.module.css';
 import { Message } from '@/types/chat';
 import Image from 'next/image';
-import ReactMarkdown from 'react-markdown';
-import LoadingDots from '@/components/ui/LoadingDots';
 import { Document } from 'langchain/document';
-import { Select } from '@chakra-ui/react';
+import loader from '../public/assets/loader.gif';
 
 export default function Home() {
-  const [age, setAge] = useState('8-12');
-  const [difficulty, setDifficulty] = useState('easy');
+  const [language, setLanguage] = useState('8-12');
+  const [difficulty, setDifficulty] = useState('default');
   const [quizData, setQuizData] = useState<any>([]);
   const [counter, setCounter] = useState<number>(0);
 
@@ -47,7 +45,7 @@ export default function Home() {
 
     setError(null);
 
-    let query = `Create 10 different multiple choice question with 4 options of difficult ${difficulty} and for children of age group ${age} years on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
+    let query = `Create 5 different multiple choice question with 4 options of difficult ${difficulty} and of ${language} language on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
 
     Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
         Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
@@ -130,7 +128,7 @@ export default function Home() {
   return (
     <>
       <Layout>
-        <div className="mx-auto flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
             INTERACTIVE QUIZ BOT
           </h1>
@@ -142,19 +140,20 @@ export default function Home() {
                 onChange={(e) => setDifficulty(e.target.value)}
                 className={styles.select}
               >
+                <option value="default">Difficulty Level</option>
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
                 <option value="difficult">Difficult</option>
               </select>
               <select
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                placeholder="Age Group"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="Languages"
                 className={styles.select}
               >
-                <option value="8-12">8-12 years</option>
-                <option value="12-16">12-16 years</option>
-                <option value="16-20">16-20 years</option>
+                <option value="english">English</option>
+                <option value="mandarin">Mandarin</option>
+                <option value="arabic">Arabic</option>
               </select>
             </div>
             <div className={styles.flex}>
@@ -167,9 +166,18 @@ export default function Home() {
                 Generate Quiz
               </button>
             </div>
+            <div className="border-b border-b-slate-400 py-4 w-full"></div>
           </form>
 
-          {loading && <div>loading....</div>}
+          {loading && (
+            <Image
+              className="mx-auto"
+              alt="loader"
+              width={100}
+              height={100}
+              src={loader}
+            />
+          )}
 
           {quizData &&
             quizData.length > 0 &&
@@ -177,8 +185,9 @@ export default function Home() {
               return (
                 <>
                   {i === counter + 1 ? (
-                    <div key={i}>
+                    <div key={i} className="py-4 text-center">
                       <div>{datum.question}</div>
+                      <div>{datum.options}</div>
                       <button
                         type="button"
                         onClick={() => setCounter(counter + 1)}
