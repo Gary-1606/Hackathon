@@ -11,7 +11,7 @@ import { Select } from '@chakra-ui/react';
 export default function Home() {
   const [age, setAge] = useState('8-12');
   const [difficulty, setDifficulty] = useState('easy');
-  const [quizData, setQuizData] = useState();
+  const [quizData, setQuizData] = useState('');
 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +46,7 @@ export default function Home() {
 
     setError(null);
 
-    let query = `Create a list of 10 random multiple choice questions with 4 options of difficult ${difficulty} and for children of age group ${age} years on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
+    let query = `Create 10 different multiple choice question with 4 options of difficult ${difficulty} and for children of age group ${age} years on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
 
     Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
         Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
@@ -83,8 +83,9 @@ export default function Home() {
       const data = await response.json();
       console.log('data', data);
 
-      const jsonData = data.text.replace(/\\n' \+/g, '');
+      const jsonData = JSON.parse(data.text.replace(/\\n' \+/g, ''));
       console.log('jsonData', jsonData);
+      debugger;
 
       if (data.error) {
         setError(data.error);
@@ -166,109 +167,111 @@ export default function Home() {
             </div>
           </form>
 
-          <main className={styles.main}>
-            <div className={styles.cloud}>
-              <div ref={messageListRef} className={styles.messagelist}>
-                {messages.map((message, index) => {
-                  let icon;
-                  let className;
-                  if (message.type === 'apiMessage') {
-                    icon = (
-                      <Image
-                        key={index}
-                        src="/bot-image.png"
-                        alt="AI"
-                        width="40"
-                        height="40"
-                        className={styles.boticon}
-                        priority
-                      />
-                    );
-                    className = styles.apimessage;
-                  } else {
-                    icon = (
-                      <Image
-                        key={index}
-                        src="/usericon.png"
-                        alt="Me"
-                        width="30"
-                        height="30"
-                        className={styles.usericon}
-                        priority
-                      />
-                    );
-                    // The latest message sent by the user will be animated while waiting for a response
-                    className =
-                      loading && index === messages.length - 1
-                        ? styles.usermessagewaiting
-                        : styles.usermessage;
-                  }
-
-                  return (
-                    <>
-                      <div key={`chatMessage-${index}`} className={className}>
-                        {icon}
-                        <div className={styles.markdownanswer}>
-                          <ReactMarkdown linkTarget="_blank">
-                            {message.message}
-                          </ReactMarkdown>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
-            </div>
-            <div className={styles.center}>
-              <div className={styles.cloudform}>
-                <form onSubmit={handleSubmit}>
-                  <textarea
-                    disabled={loading}
-                    onKeyDown={handleEnter}
-                    ref={textAreaRef}
-                    autoFocus={false}
-                    rows={1}
-                    maxLength={512}
-                    id="userInput"
-                    name="userInput"
-                    placeholder={
-                      loading
-                        ? 'Waiting for response...'
-                        : 'What is this legal case about?'
+          {quizData && (
+            <main className={styles.main}>
+              <div className={styles.cloud}>
+                <div ref={messageListRef} className={styles.messagelist}>
+                  {messages.map((message, index) => {
+                    let icon;
+                    let className;
+                    if (message.type === 'apiMessage') {
+                      icon = (
+                        <Image
+                          key={index}
+                          src="/bot-image.png"
+                          alt="AI"
+                          width="40"
+                          height="40"
+                          className={styles.boticon}
+                          priority
+                        />
+                      );
+                      className = styles.apimessage;
+                    } else {
+                      icon = (
+                        <Image
+                          key={index}
+                          src="/usericon.png"
+                          alt="Me"
+                          width="30"
+                          height="30"
+                          className={styles.usericon}
+                          priority
+                        />
+                      );
+                      // The latest message sent by the user will be animated while waiting for a response
+                      className =
+                        loading && index === messages.length - 1
+                          ? styles.usermessagewaiting
+                          : styles.usermessage;
                     }
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className={styles.textarea}
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className={styles.generatebutton}
-                  >
-                    {loading ? (
-                      <div className={styles.loadingwheel}>
-                        <LoadingDots color="#000" />
-                      </div>
-                    ) : (
-                      // Send icon SVG in input field
-                      <svg
-                        viewBox="0 0 20 20"
-                        className={styles.svgicon}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                      </svg>
-                    )}
-                  </button>
-                </form>
+
+                    return (
+                      <>
+                        <div key={`chatMessage-${index}`} className={className}>
+                          {icon}
+                          <div className={styles.markdownanswer}>
+                            <ReactMarkdown linkTarget="_blank">
+                              {message.message}
+                            </ReactMarkdown>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-            {error && (
-              <div className="border border-red-400 rounded-md p-4">
-                <p className="text-red-500">{error}</p>
+              <div className={styles.center}>
+                <div className={styles.cloudform}>
+                  <form onSubmit={handleSubmit}>
+                    <textarea
+                      disabled={loading}
+                      onKeyDown={handleEnter}
+                      ref={textAreaRef}
+                      autoFocus={false}
+                      rows={1}
+                      maxLength={512}
+                      id="userInput"
+                      name="userInput"
+                      placeholder={
+                        loading
+                          ? 'Waiting for response...'
+                          : 'What is this legal case about?'
+                      }
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      className={styles.textarea}
+                    />
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className={styles.generatebutton}
+                    >
+                      {loading ? (
+                        <div className={styles.loadingwheel}>
+                          <LoadingDots color="#000" />
+                        </div>
+                      ) : (
+                        // Send icon SVG in input field
+                        <svg
+                          viewBox="0 0 20 20"
+                          className={styles.svgicon}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                        </svg>
+                      )}
+                    </button>
+                  </form>
+                </div>
               </div>
-            )}
-          </main>
+              {error && (
+                <div className="border border-red-400 rounded-md p-4">
+                  <p className="text-red-500">{error}</p>
+                </div>
+              )}
+            </main>
+          )}
         </div>
         <footer className="m-auto p-4">
           <a href="https://twitter.com/mayowaoshin">Demo by TEAM HAI-5</a>
