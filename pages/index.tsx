@@ -146,9 +146,9 @@ export default function Home() {
     <>
       <Layout>
         <div className="flex flex-col gap-4">
-          <h1 className="text-2xl font-bold leading-[1.1] tracking-tighter text-center">
-            INTERACTIVE QUIZ BOT
-          </h1>
+          <p className="text-3xl font-bold leading-[1.1] font-serif tracking-tighter text-center">
+            HUDDLE UP!
+          </p>
           <form className="mt-8" onSubmit={handleSubmit}>
             <div className={styles.flex}>
               <select
@@ -180,7 +180,7 @@ export default function Home() {
                 disabled={loading}
                 className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
-                Generate Quiz
+                Start
               </button>
             </div>
             <div className="border-b border-b-slate-400 py-4 w-full"></div>
