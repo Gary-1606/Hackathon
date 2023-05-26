@@ -11,7 +11,8 @@ import { Select } from '@chakra-ui/react';
 export default function Home() {
   const [age, setAge] = useState('8-12');
   const [difficulty, setDifficulty] = useState('easy');
-  const [quizData, setQuizData] = useState('');
+  const [quizData, setQuizData] = useState<any>([]);
+  const [counter, setCounter] = useState<number>(0);
 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +32,7 @@ export default function Home() {
     history: [],
   });
 
-  const { messages, history } = messageState;
+  const { history } = messageState;
 
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -49,7 +50,7 @@ export default function Home() {
     let query = `Create 10 different multiple choice question with 4 options of difficult ${difficulty} and for children of age group ${age} years on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
 
     Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
-        Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
+        Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
         
         The JSON response:`;
 
@@ -85,7 +86,6 @@ export default function Home() {
 
       const jsonData = JSON.parse(data.text.replace(/\\n' \+/g, ''));
       console.log('jsonData', jsonData);
-      debugger;
 
       if (data.error) {
         setError(data.error);
@@ -105,6 +105,7 @@ export default function Home() {
       }
       console.log('messageState', messageState);
       setQuizData(jsonData);
+      setCounter(counter + 1);
       setLoading(false);
 
       //scroll to bottom
@@ -125,6 +126,7 @@ export default function Home() {
     }
   };
 
+  console.log('quizData', quizData);
   return (
     <>
       <Layout>
@@ -167,111 +169,28 @@ export default function Home() {
             </div>
           </form>
 
-          {quizData && (
-            <main className={styles.main}>
-              <div className={styles.cloud}>
-                <div ref={messageListRef} className={styles.messagelist}>
-                  {messages.map((message, index) => {
-                    let icon;
-                    let className;
-                    if (message.type === 'apiMessage') {
-                      icon = (
-                        <Image
-                          key={index}
-                          src="/bot-image.png"
-                          alt="AI"
-                          width="40"
-                          height="40"
-                          className={styles.boticon}
-                          priority
-                        />
-                      );
-                      className = styles.apimessage;
-                    } else {
-                      icon = (
-                        <Image
-                          key={index}
-                          src="/usericon.png"
-                          alt="Me"
-                          width="30"
-                          height="30"
-                          className={styles.usericon}
-                          priority
-                        />
-                      );
-                      // The latest message sent by the user will be animated while waiting for a response
-                      className =
-                        loading && index === messages.length - 1
-                          ? styles.usermessagewaiting
-                          : styles.usermessage;
-                    }
+          {loading && <div>loading....</div>}
 
-                    return (
-                      <>
-                        <div key={`chatMessage-${index}`} className={className}>
-                          {icon}
-                          <div className={styles.markdownanswer}>
-                            <ReactMarkdown linkTarget="_blank">
-                              {message.message}
-                            </ReactMarkdown>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className={styles.center}>
-                <div className={styles.cloudform}>
-                  <form onSubmit={handleSubmit}>
-                    <textarea
-                      disabled={loading}
-                      onKeyDown={handleEnter}
-                      ref={textAreaRef}
-                      autoFocus={false}
-                      rows={1}
-                      maxLength={512}
-                      id="userInput"
-                      name="userInput"
-                      placeholder={
-                        loading
-                          ? 'Waiting for response...'
-                          : 'What is this legal case about?'
-                      }
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      className={styles.textarea}
-                    />
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className={styles.generatebutton}
-                    >
-                      {loading ? (
-                        <div className={styles.loadingwheel}>
-                          <LoadingDots color="#000" />
-                        </div>
-                      ) : (
-                        // Send icon SVG in input field
-                        <svg
-                          viewBox="0 0 20 20"
-                          className={styles.svgicon}
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-                        </svg>
-                      )}
-                    </button>
-                  </form>
-                </div>
-              </div>
-              {error && (
-                <div className="border border-red-400 rounded-md p-4">
-                  <p className="text-red-500">{error}</p>
-                </div>
-              )}
-            </main>
-          )}
+          {quizData &&
+            quizData.length > 0 &&
+            quizData.map((datum: any, i: any) => {
+              return (
+                <>
+                  {i === counter + 1 ? (
+                    <div key={i}>
+                      <div>{datum.question}</div>
+                      <button
+                        type="button"
+                        onClick={() => setCounter(counter + 1)}
+                        className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  ) : null}
+                </>
+              );
+            })}
         </div>
       </Layout>
     </>
