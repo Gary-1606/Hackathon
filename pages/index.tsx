@@ -233,6 +233,7 @@ export default function Home() {
                         type="button"
                         onClick={handleNextBtnClick}
                         className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500"
+                        disabled={!isAnswerCorrect}
                       >
                         Next
                       </button>
