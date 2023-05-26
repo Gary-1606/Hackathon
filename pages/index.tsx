@@ -12,6 +12,8 @@ export default function Home() {
   const [quizData, setQuizData] = useState<any>([]);
   const [counter, setCounter] = useState<number>(0);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
+  const [questionOnView, setQuestionOnView] = useState<number>();
+  const [clickedOption, setClickedOption] = useState<number>();
 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +48,7 @@ export default function Home() {
 
     setError(null);
 
-    let query = `Create 5 different multiple choice question with 4 options of difficult ${difficulty} and of ${language} language on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
+    let query = `Create 5 different multiple choice question with 4 options of difficult ${difficulty} and of ${language} language on AFL rules. Provide correct answer in numeric format and hint for each questions on AFL rules. 
 
     Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
         Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
@@ -104,7 +106,6 @@ export default function Home() {
       }
       console.log('messageState', messageState);
       setQuizData(jsonData);
-      setCounter(counter + 1);
       setLoading(false);
 
       //scroll to bottom
@@ -126,10 +127,17 @@ export default function Home() {
   };
 
   const handleOptionClick = (optionIndex: any, questionIndex: any) => {
-    if (questionIndex.answer === optionIndex + 1) {
+    setQuestionOnView(questionIndex);
+    setClickedOption(optionIndex);
+    if (quizData[questionIndex].answer === optionIndex + 1) {
       setIsAnswerCorrect(true);
       return;
     }
+    setIsAnswerCorrect(false);
+  };
+
+  const handleNextBtnClick = () => {
+    setCounter(counter + 1);
     setIsAnswerCorrect(false);
   };
 
@@ -193,7 +201,7 @@ export default function Home() {
             quizData.map((datum: any, i: number) => {
               return (
                 <>
-                  {i === counter + 1 ? (
+                  {i === counter ? (
                     <div key={i} className="py-4 text-center">
                       <>
                         <p>{datum.question}</p>
@@ -207,7 +215,13 @@ export default function Home() {
                               <button
                                 onClick={() => handleOptionClick(index, i)}
                                 key={i}
-                                className="bg-gray-300 border border-gray-200 px-4 py-2 hover:bg-slate-700 hover:text-white"
+                                className={`bg-gray-300 border border-gray-200 px-4 py-2  ${
+                                  questionOnView === i &&
+                                  isAnswerCorrect &&
+                                  clickedOption === index
+                                    ? 'bg-green-400 text-white'
+                                    : 'hover:bg-slate-700 hover:text-white focus:bg-red-400 focus:text-white'
+                                }}`}
                               >
                                 {item}
                               </button>
@@ -217,9 +231,8 @@ export default function Home() {
                       </>
                       <button
                         type="button"
-                        onClick={() => setCounter(counter + 1)}
+                        onClick={handleNextBtnClick}
                         className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500"
-                        disabled={!isAnswerCorrect}
                       >
                         Next
                       </button>
