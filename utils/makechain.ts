@@ -9,14 +9,12 @@ Chat History:
 Follow Up Input: {question}
 Standalone question:`;
 
-const QA_PROMPT = `
-Create 10 different multiple choice question with 4 options of difficult medium and for children of age group 8-12 years on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
+const QA_PROMPT = `Create 5 different multiple choice question with 4 options of difficulty medium on AFL rules. Provide correct answer and hint for each questions on AFL rules. 
 
-    Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
-        Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
-        
-        The JSON response:
-`;
+Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
+    Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
+    
+    The JSON response:`;
 
 export const makeChain = (vectorstore: PineconeStore) => {
   const model = new OpenAI({
