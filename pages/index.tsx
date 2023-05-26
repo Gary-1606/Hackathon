@@ -11,6 +11,7 @@ export default function Home() {
   const [difficulty, setDifficulty] = useState('default');
   const [quizData, setQuizData] = useState<any>([]);
   const [counter, setCounter] = useState<number>(0);
+  const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean>(false);
 
   const [query, setQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -124,6 +125,14 @@ export default function Home() {
     }
   };
 
+  const handleOptionClick = (optionIndex: any, questionIndex: any) => {
+    if (questionIndex.answer === optionIndex + 1) {
+      setIsAnswerCorrect(true);
+      return;
+    }
+    setIsAnswerCorrect(false);
+  };
+
   console.log('quizData', quizData);
   return (
     <>
@@ -181,17 +190,36 @@ export default function Home() {
 
           {quizData &&
             quizData.length > 0 &&
-            quizData.map((datum: any, i: any) => {
+            quizData.map((datum: any, i: number) => {
               return (
                 <>
                   {i === counter + 1 ? (
                     <div key={i} className="py-4 text-center">
-                      <div>{datum.question}</div>
-                      <div>{datum.options}</div>
+                      <>
+                        <p>{datum.question}</p>
+                        <p className="py-4">
+                          <strong>Hint: </strong>
+                          {datum.hint}
+                        </p>
+                        <div className="gap-4 flex flex-row justify-center py-4">
+                          {datum.options.map((item: any, index: number) => {
+                            return (
+                              <button
+                                onClick={() => handleOptionClick(index, i)}
+                                key={i}
+                                className="bg-gray-300 border border-gray-200 px-4 py-2 hover:bg-slate-700 hover:text-white"
+                              >
+                                {item}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </>
                       <button
                         type="button"
                         onClick={() => setCounter(counter + 1)}
-                        className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        className="mt-8 text-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500"
+                        disabled={!isAnswerCorrect}
                       >
                         Next
                       </button>
