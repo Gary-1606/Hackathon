@@ -7,7 +7,7 @@ import { Document } from 'langchain/document';
 import loader from '../public/assets/loader.gif';
 
 export default function Home() {
-  const [language, setLanguage] = useState('8-12');
+  const [age, setAge] = useState('10-11');
   const [difficulty, setDifficulty] = useState('default');
   const [quizData, setQuizData] = useState<any>([]);
   const [counter, setCounter] = useState<number>(0);
@@ -48,7 +48,7 @@ export default function Home() {
 
     setError(null);
 
-    let query = `Create 5 different multiple choice question with 4 options of difficult ${difficulty} and of ${language} language on AFL rules. Provide correct answer in numeric format and hint for each questions on AFL rules. 
+    let query = `Create 5 different multiple choice question with 4 options of difficulty ${difficulty} and of ${age} age about the rules of Australian Football. Provide correct answer in numeric format and hint for each questions on AFL rules. 
 
     Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
         Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
@@ -163,8 +163,8 @@ export default function Home() {
                 <option value="difficult">Difficult</option>
               </select>
               <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
                 placeholder="Languages"
                 className={styles.select}
               >

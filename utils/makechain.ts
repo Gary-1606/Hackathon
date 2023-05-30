@@ -9,7 +9,7 @@ Chat History:
 Follow Up Input: {question}
 Standalone question:`;
 
-const QA_PROMPT = `Create 5 different multiple choice question with 4 options of difficulty medium on AFL rules. Provide correct answer in numeric format and hint for each questions on AFL rules. 
+const QA_PROMPT = `Create 5 different multiple choice question with 4 options of difficulty medium about the rules of Australian Football suitable for children aged 10-11. Provide correct answer in numeric format and hint for each questions on AFL rules. 
 
 Make sure the hints are designed to improve STEM (Science, Technology, Engineering and Mathematics) knowledge for the kids. 
     Do not include any explanations, only provide a  RFC8259 compliant array of JSON response  following this format without deviation.
